@@ -1,11 +1,10 @@
-const cardTemplate = document.querySelector('#card')
+const template = document.querySelector('#card')
   .content
   .querySelector('.popup');
+const photoTemplate = template.querySelector('.popup__photo');
+template.querySelector('.popup__photos').innerHTML = '';
 
-const photoTemplate = cardTemplate.querySelector('.popup__photo');
-cardTemplate.querySelector('.popup__photos').innerHTML = '';
-
-const offerType = {
+const OfferTypes = {
   flat: 'Квартира',
   bungalow: 'Бунгало',
   house: 'Дом',
@@ -13,104 +12,99 @@ const offerType = {
   hotel: 'Отель',
 };
 
-const generateOfferCard = (cardData) => {
-  const card = cardTemplate.cloneNode(true);
-  const {author, offer} = cardData;
-  const {avatar} = author;
-  const {
-    address,
-    checkin,
-    checkout,
-    description,
-    features,
-    guests,
-    photos,
-    price,
-    rooms,
-    title,
-    type,
-  } = offer;
+const appendFeatures = (featureList, features) => {
+  featureList
+    .querySelectorAll('.popup__feature')
+    .forEach((featureListItem) => {
+      const hasFeature = [...featureListItem.classList]
+        .some((className) => features.some((feature) => className.includes(feature)));
 
-  if (avatar) {
-    card.querySelector('.popup__avatar').src = avatar;
-  } else {
-    card.querySelector('.popup__avatar').remove();
-  }
-
-  if (title) {
-    card.querySelector('.popup__title').textContent = title;
-  } else {
-    card.querySelector('.popup__title').remove();
-  }
-
-  if (address) {
-    card.querySelector('.popup__text--address').textContent = address;
-  } else {
-    card.querySelector('.popup__text--address').remove();
-  }
-
-  if (price) {
-    card.querySelector('.popup__text--price').innerHTML = `${price} <span>₽/ночь</span>`;
-  } else {
-    card.querySelector('.popup__text--price').remove();
-  }
-
-  if (type) {
-    card.querySelector('.popup__type').textContent = offerType[type];
-  } else {
-    card.querySelector('.popup__type').remove();
-  }
-
-  if (rooms || guests) {
-    card
-      .querySelector('.popup__text--capacity')
-      .textContent = `${rooms} комнаты для ${guests} гостей`;
-  } else {
-    card.querySelector('.popup__text--capacity').remove();
-  }
-
-  if (checkin || checkout) {
-    card
-      .querySelector('.popup__text--time')
-      .textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
-  } else {
-    card.querySelector('.popup__text--time').remove();
-  }
-
-  if (features || features.length) {
-    card
-      .querySelectorAll('.popup__feature')
-      .forEach((featureListItem) => {
-        const hasFeature = [...featureListItem.classList]
-          .some((className) => features.some((feature) => className.includes(feature)));
-
-        if (!hasFeature) {
-          featureListItem.remove();
-        }
-      });
-  } else {
-    card.querySelectorAll('.popup__feature').remove();
-  }
-
-  if (description) {
-    card.querySelector('.popup__description').textContent = description;
-  } else {
-    card.querySelector('.popup__description').remove();
-  }
-
-  if (photos || photos.length) {
-    photos.forEach((src) => {
-      const photo = photoTemplate.cloneNode(true);
-      photo.src = src;
-      card.querySelector('.popup__photos').appendChild(photo);
+      if (!hasFeature) {
+        featureListItem.remove();
+      }
     });
-  } else  {
-    card.querySelector('.popup__photos').remove();
+};
+
+const appendPhotos = (sources) => {
+  const photos = document.createDocumentFragment();
+
+  sources.forEach((src) => {
+    const photo = photoTemplate.cloneNode(true);
+    photo.src = src;
+    photos.appendChild(photo);
+  });
+
+  return photos;
+};
+
+export const generateOfferCard = (data) => {
+  const generated = template.cloneNode(true);
+
+  if (data.author.avatar) {
+    generated.querySelector('.popup__avatar').src = data.author.avatar;
+  } else {
+    generated.querySelector('.popup__avatar').remove();
   }
 
-  return card;
+  if (data.offer.title) {
+    generated.querySelector('.popup__title').textContent = data.offer.title;
+  } else {
+    generated.querySelector('.popup__title').remove();
+  }
+
+  if (data.offer.address) {
+    generated.querySelector('.popup__text--address').textContent = data.offer.address;
+  } else {
+    generated.querySelector('.popup__text--address').remove();
+  }
+
+  if (data.offer.price) {
+    generated.querySelector('.popup__text--price')
+      .innerHTML = `${data.offer.price} <span>₽/ночь</span>`;
+  } else {
+    generated.querySelector('.popup__text--price').remove();
+  }
+
+  if (data.offer.type) {
+    generated.querySelector('.popup__type').textContent = OfferTypes[data.offer.type];
+  } else {
+    generated.querySelector('.popup__type').remove();
+  }
+
+  if (data.offer.rooms || data.offer.guests) {
+    generated
+      .querySelector('.popup__text--capacity')
+      .textContent = `${data.offer.rooms} комнаты для ${data.offer.guests} гостей`;
+  } else {
+    generated.querySelector('.popup__text--capacity').remove();
+  }
+
+  if (data.offer.checkin || data.offer.checkout) {
+    generated
+      .querySelector('.popup__text--time')
+      .textContent = `Заезд после ${data.offer.checkin}, выезд до ${data.offer.checkout}`;
+  } else {
+    generated.querySelector('.popup__text--time').remove();
+  }
+
+  if (data.offer.features || data.offer.features.length) {
+    appendFeatures(generated.querySelector('.popup__features'), data.offer.features);
+  } else {
+    generated.querySelectorAll('.popup__feature').remove();
+  }
+
+  if (data.offer.description) {
+    generated.querySelector('.popup__description').textContent = data.offer.description;
+  } else {
+    generated.querySelector('.popup__description').remove();
+  }
+
+  if (data.offer.photos || data.offer.photos.length) {
+    generated.querySelector('.popup__photos').append(appendPhotos(data.offer.photos));
+  } else  {
+    generated.querySelector('.popup__photos').remove();
+  }
+
+  return generated;
 };
 
-export {
-  generateOfferCard,
-};
