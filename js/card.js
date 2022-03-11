@@ -12,33 +12,34 @@ const OfferTypes = {
   hotel: 'Отель',
 };
 
-const appendFeatures = (featureList, features) => {
-  featureList
-    .querySelectorAll('.popup__feature')
-    .forEach((featureListItem) => {
-      const hasFeature = [...featureListItem.classList]
-        .some((className) => features.some((feature) => className.includes(feature)));
-
-      if (!hasFeature) {
-        featureListItem.remove();
-      }
-    });
-};
-
-const appendPhotos = (sources) => {
-  const photos = document.createDocumentFragment();
-
-  sources.forEach((src) => {
-    const photo = photoTemplate.cloneNode(true);
-    photo.src = src;
-    photos.appendChild(photo);
-  });
-
-  return photos;
-};
-
-export const generateOfferCard = (data) => {
+export const generateOfferElement = (data) => {
   const generated = template.cloneNode(true);
+
+  const toggleFeatures = () => {
+    generated.querySelector('.popup__features')
+      .querySelectorAll('.popup__feature')
+      .forEach((featureListItem) => {
+        const hasFeature = [...featureListItem.classList]
+          .some((className) => data.offer.features
+            .some((feature) => className.includes(feature)));
+
+        if (!hasFeature) {
+          featureListItem.remove();
+        }
+      });
+  };
+
+  const getPhotosFragment = () => {
+    const photos = document.createDocumentFragment();
+
+    data.offer.photos.forEach((src) => {
+      const photo = photoTemplate.cloneNode(true);
+      photo.src = src;
+      photos.appendChild(photo);
+    });
+
+    return photos;
+  };
 
   if (data.author.avatar) {
     generated.querySelector('.popup__avatar').src = data.author.avatar;
@@ -88,7 +89,7 @@ export const generateOfferCard = (data) => {
   }
 
   if (data.offer.features || data.offer.features.length) {
-    appendFeatures(generated.querySelector('.popup__features'), data.offer.features);
+    toggleFeatures();
   } else {
     generated.querySelectorAll('.popup__feature').remove();
   }
@@ -100,8 +101,8 @@ export const generateOfferCard = (data) => {
   }
 
   if (data.offer.photos || data.offer.photos.length) {
-    generated.querySelector('.popup__photos').append(appendPhotos(data.offer.photos));
-  } else  {
+    generated.querySelector('.popup__photos').append(getPhotosFragment());
+  } else {
     generated.querySelector('.popup__photos').remove();
   }
 
