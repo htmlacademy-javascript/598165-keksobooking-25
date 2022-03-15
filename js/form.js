@@ -1,3 +1,5 @@
+const ADDRESS_VALIDATION_ERROR = 'Формат значения поля адреса: широта, долгота';
+
 const adForm = document.querySelector('.ad-form');
 
 const capacityErrorMessages = {
@@ -16,6 +18,7 @@ const capacityOption = {
 
 const roomsField = adForm.querySelector('#room_number');
 const capacityField = adForm.querySelector('#capacity');
+const addressField = adForm.querySelector('#address');
 
 const pristine = new Pristine(adForm, {
   classTo: 'ad-form__element',
@@ -31,13 +34,18 @@ const getCapacityErrorMessage = () => capacityErrorMessages[roomsField.value];
 const validateCapacity = () => capacityOption[roomsField.value]
   .includes(capacityField.value);
 
-pristine.addValidator(roomsField, validateCapacity, getCapacityErrorMessage);
-pristine.addValidator(capacityField, validateCapacity);
+const validateAddress = () => {
+  const coordsRegex = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+  return addressField.value.match(coordsRegex);
+};
 
-const validateAddOfferForm = () => {
+const setupFormValidation = () => {
+  pristine.addValidator(roomsField, validateCapacity, getCapacityErrorMessage);
+  pristine.addValidator(capacityField, validateCapacity);
+  pristine.addValidator(addressField, validateAddress, ADDRESS_VALIDATION_ERROR);
+
   adForm.addEventListener('submit', (evt) => {
-    const isValid = pristine.validate();
-    if (!isValid) {
+    if (!pristine.validate()) {
       evt.preventDefault();
     }
   });
@@ -47,7 +55,7 @@ const validateAddOfferForm = () => {
 };
 
 export {
-  validateAddOfferForm,
+  setupFormValidation,
 };
 
 
