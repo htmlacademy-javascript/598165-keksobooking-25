@@ -1,3 +1,5 @@
+import {setupSlider, updateSlider} from './slider.js';
+
 const ADDRESS_VALIDATION_ERROR = 'Формат значения поля адреса: широта, долгота';
 const ONE_ROOM_VALIDATION_ERROR = '1 комната для 1 гостя';
 const TWO_ROOM_VALIDATION_ERROR = '2 комнаты для 2 гостей или для 1 гостя';
@@ -66,6 +68,7 @@ const getMinPriceErrorMessage = () => `Минимальное значение �
 const setMinPrice = () => {
   priceField.min = minPrices[typeField.value];
   priceField.placeholder = minPrices[typeField.value];
+  updateSlider({range: {min: minPrices[typeField.value]}});
 };
 
 const syncTime = (field1, field2) => {
@@ -79,12 +82,6 @@ const setupFormValidation = () => {
   pristine.addValidator(priceField, validateMinPrice, getMinPriceErrorMessage);
   pristine.addValidator(timeInField, validateTime, TIME_VALIDATION_ERROR);
   pristine.addValidator(timeOutField, validateTime, TIME_VALIDATION_ERROR);
-
-  setMinPrice();
-  typeField.addEventListener('change', () => {
-    setMinPrice();
-    pristine.validate();
-  });
 
   roomsField.addEventListener('change', () => pristine.validate());
   capacityField.addEventListener('change', () => pristine.validate());
@@ -105,6 +102,18 @@ const setupFormValidation = () => {
   });
 };
 
+const initForm = () => {
+  setupSlider();
+  setupFormValidation();
+  setMinPrice();
+
+  typeField.addEventListener('change', () => {
+    setMinPrice();
+    pristine.validate();
+  });
+
+};
+
 export {
-  setupFormValidation,
+  initForm,
 };
