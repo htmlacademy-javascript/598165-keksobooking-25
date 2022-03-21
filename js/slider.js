@@ -27,7 +27,7 @@ const setupSlider = () => {
   });
 };
 
-const updateSlider = (options) => {
+const updateSliderOptions = (options) => {
   const {range: {min, max = MAX_PRICE}} = options;
   sliderElement.noUiSlider.updateOptions({range: {min, max}});
 };
@@ -36,14 +36,17 @@ const toggleSlider = (enable) => {
   if (enable) {
     sliderElement.removeAttribute('disabled');
   } else {
-    sliderElement.setAttribute('disabled', true);
+    sliderElement.setAttribute('disabled', 'disabled');
   }
 };
 
+const setSlider = (value) => sliderElement.noUiSlider.set(value);
+
 export {
+  setSlider,
   setupSlider,
-  updateSlider,
   toggleSlider,
+  updateSliderOptions,
 };
 
 

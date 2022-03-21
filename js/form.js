@@ -1,4 +1,5 @@
-import {setupSlider, updateSlider} from './slider.js';
+import {setSlider, setupSlider, updateSliderOptions} from './slider.js';
+import {debounce} from './utils.js';
 
 const ADDRESS_VALIDATION_ERROR = 'Формат значения поля адреса: широта, долгота';
 const ONE_ROOM_VALIDATION_ERROR = '1 комната для 1 гостя';
@@ -68,7 +69,7 @@ const getMinPriceErrorMessage = () => `Минимальное значение �
 const setMinPrice = () => {
   priceField.min = minPrices[typeField.value];
   priceField.placeholder = minPrices[typeField.value];
-  updateSlider({range: {min: minPrices[typeField.value]}});
+  updateSliderOptions({range: {min: minPrices[typeField.value]}});
 };
 
 const syncTime = (field1, field2) => {
@@ -106,6 +107,9 @@ const initForm = () => {
   setupSlider();
   setupFormValidation();
   setMinPrice();
+
+  priceField
+    .addEventListener('input', debounce(() => setSlider(priceField.value)));
 
   typeField.addEventListener('change', () => {
     setMinPrice();

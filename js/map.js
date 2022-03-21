@@ -33,6 +33,10 @@ const addMainMarker = () => {
   });
 
   mainMarker.addTo(map);
+  document
+    .querySelector('#address')
+    .value = `${TOKYO_COORDS.lat}, ${TOKYO_COORDS.lng}`;
+
   mainMarker.on('drag', updateAddressField);
 };
 
