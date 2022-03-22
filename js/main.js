@@ -1,11 +1,12 @@
 import {createOffers, OFFERS_NUMBER} from './data.js';
-import {generateOfferElement} from './card.js';
-import {setupFormValidation} from './form.js';
+import {initForm} from './form.js';
+import {disablePage} from './page.js';
+import {initMap, addMarkers} from './map.js';
 
 const offers = createOffers(OFFERS_NUMBER);
-const offerCard = generateOfferElement(offers[0]);
 
-document.querySelector('#map-canvas').append(offerCard);
-document.querySelector('#address').value = offers[0].offer.address;
+disablePage();
+initMap('map-canvas');
+addMarkers(offers);
+initForm();
 
-setupFormValidation();

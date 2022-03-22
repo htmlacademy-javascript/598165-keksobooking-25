@@ -1,3 +1,5 @@
+import {toggleSlider} from './slider.js';
+
 const DISABLE_CLASS = 'ad-form--disabled';
 const INTERACTIVE_ELEMENTS = [
   'button', 'input', 'select', 'textarea'
@@ -28,11 +30,13 @@ const toggleForms = (enable) => {
 };
 
 const disablePage = () => {
+  toggleSlider(false);
   toggleInputs(false);
   toggleForms(false);
 };
 
 const enablePage = () => {
+  toggleSlider(true);
   toggleInputs(true);
   toggleForms(true);
 };
