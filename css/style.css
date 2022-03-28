@@ -963,7 +963,8 @@ fieldset {
  */
 
 .success,
-.error {
+.error,
+.load-error {
   position: fixed;
   top: 0;
   left: 0;

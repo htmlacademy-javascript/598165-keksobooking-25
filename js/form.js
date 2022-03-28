@@ -1,5 +1,7 @@
 import {setSlider, setupSlider, updateSliderOptions} from './slider.js';
 import {debounce} from './utils.js';
+import {sendData, showApiMessage} from './api.js';
+import {resetMainMarker} from './map.js';
 
 const ADDRESS_VALIDATION_ERROR = 'Формат значения поля адреса: широта, долгота';
 const ONE_ROOM_VALIDATION_ERROR = '1 комната для 1 гостя';
@@ -39,7 +41,8 @@ const typeField = adForm.querySelector('#type');
 const priceField = adForm.querySelector('#price');
 const timeInField = adForm.querySelector('#timein');
 const timeOutField = adForm.querySelector('#timeout');
-
+const resetButton = adForm.querySelector('.ad-form__reset');
+const submitButton = adForm.querySelector('.ad-form__submit');
 
 const pristine = new Pristine(adForm, {
   classTo: 'ad-form__element',
@@ -76,6 +79,24 @@ const syncTime = (field1, field2) => {
   field2.value = field1.value;
 };
 
+const resetForm = () => {
+  adForm.reset();
+  resetMainMarker();
+  setMinPrice();
+};
+
+const disableSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.style.opacity = '0.5';
+  submitButton.textContent = 'Публикую...';
+};
+
+const enableSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.style.opacity = '1';
+  submitButton.textContent = 'Опубликовать';
+};
+
 const setupFormValidation = () => {
   pristine.addValidator(roomsField, validateCapacity, getCapacityErrorMessage);
   pristine.addValidator(capacityField, validateCapacity);
@@ -97,8 +118,20 @@ const setupFormValidation = () => {
   });
 
   adForm.addEventListener('submit', (evt) => {
-    if (!pristine.validate()) {
-      evt.preventDefault();
+    evt.preventDefault();
+
+    if (pristine.validate()) {
+      const formData = new FormData(evt.target);
+      disableSubmitButton();
+
+      sendData(() => {
+        showApiMessage('success');
+        enableSubmitButton();
+        resetForm(evt.target);
+      }, () => {
+        showApiMessage('error');
+        enableSubmitButton();
+      }, formData);
     }
   });
 };
@@ -114,6 +147,11 @@ const initForm = () => {
   typeField.addEventListener('change', () => {
     setMinPrice();
     pristine.validate();
+  });
+
+  resetButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    resetForm();
   });
 
 };

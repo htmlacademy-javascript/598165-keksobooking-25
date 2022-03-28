@@ -72,7 +72,7 @@ export const generateOfferElement = (data) => {
     generated.querySelector('.popup__type').remove();
   }
 
-  if (data.offer.rooms || data.offer.guests) {
+  if (data.offer.rooms && data.offer.guests) {
     generated
       .querySelector('.popup__text--capacity')
       .textContent = `${data.offer.rooms} комнаты для ${data.offer.guests} гостей`;
@@ -80,7 +80,7 @@ export const generateOfferElement = (data) => {
     generated.querySelector('.popup__text--capacity').remove();
   }
 
-  if (data.offer.checkin || data.offer.checkout) {
+  if (data.offer.checkin && data.offer.checkout) {
     generated
       .querySelector('.popup__text--time')
       .textContent = `Заезд после ${data.offer.checkin}, выезд до ${data.offer.checkout}`;
@@ -88,10 +88,10 @@ export const generateOfferElement = (data) => {
     generated.querySelector('.popup__text--time').remove();
   }
 
-  if (data.offer.features || data.offer.features.length) {
+  if (data.offer.features && data.offer.features.length) {
     toggleFeatures();
   } else {
-    generated.querySelectorAll('.popup__feature').remove();
+    generated.querySelector('.popup__feature').remove();
   }
 
   if (data.offer.description) {
@@ -100,7 +100,7 @@ export const generateOfferElement = (data) => {
     generated.querySelector('.popup__description').remove();
   }
 
-  if (data.offer.photos || data.offer.photos.length) {
+  if (data.offer.photos && data.offer.photos.length) {
     generated.querySelector('.popup__photos').append(getPhotosFragment());
   } else {
     generated.querySelector('.popup__photos').remove();
