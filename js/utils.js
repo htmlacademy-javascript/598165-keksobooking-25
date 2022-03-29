@@ -32,10 +32,13 @@ const debounce = (callback, timeout = 500) => {
   };
 };
 
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
 export {
   debounce,
   getRandomPositiveInt,
   getRandomPositiveFloat,
   getRandomFromArray,
-  shuffle
+  shuffle,
+  isEscapeKey,
 };

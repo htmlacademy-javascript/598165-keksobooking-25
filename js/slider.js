@@ -30,6 +30,7 @@ const setupSlider = () => {
 const updateSliderOptions = (options) => {
   const {range: {min, max = MAX_PRICE}} = options;
   sliderElement.noUiSlider.updateOptions({range: {min, max}});
+  sliderElement.noUiSlider.set(min);
 };
 
 const toggleSlider = (enable) => {

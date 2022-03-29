@@ -6,7 +6,7 @@ const TOKYO_COORDS = {
   lng: 139.839478
 };
 
-let map, markerGroup;
+let map, markerGroup, mainMarker;
 const addressField = document.querySelector('#address');
 
 const mainPinIcon = L.icon({
@@ -27,7 +27,7 @@ const updateAddressField = (evt) => {
 };
 
 const addMainMarker = () => {
-  const mainMarker = L.marker(TOKYO_COORDS, {
+  mainMarker = L.marker(TOKYO_COORDS, {
     draggable: true,
     icon: mainPinIcon,
   });
@@ -66,6 +66,12 @@ const addMarkers = (offers) => {
   offers.forEach(createOfferMarker);
 };
 
+const resetMainMarker = () => {
+  map.closePopup();
+  mainMarker.remove();
+  addMainMarker();
+};
+
 const removeMarkers = () => {
   markerGroup.clearLayers();
 };
@@ -74,4 +80,5 @@ export {
   initMap,
   addMarkers,
   removeMarkers,
+  resetMainMarker,
 };
