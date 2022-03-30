@@ -1,12 +1,13 @@
 import {isEscapeKey} from './utils.js';
 
-const OFFERS_NUMBER = 10;
-const OFFERS_URL = 'https://25.javascript.pages.academy/keksobooking/data';
-const POST_URL = 'https://25.javascript.pages.academy/keksobooking';
-const HttpMethod = {
+const HttpMethods = {
   GET: 'GET',
   POST: 'POST',
 };
+
+const LIMIT = 10;
+const OFFERS_URL = 'https://25.javascript.pages.academy/keksobooking/data';
+const FORM_URL = 'https://25.javascript.pages.academy/keksobooking';
 
 const adaptData = (data) => {
   data.forEach((it) => {
@@ -20,7 +21,7 @@ const getData = (onSuccess, onFail) => {
     .then((response) => response.json())
     .then((offers) => {
       adaptData(offers);
-      offers = offers.slice(0, OFFERS_NUMBER);
+      offers = offers.slice(0, LIMIT);
 
       onSuccess(offers);
     })
@@ -28,8 +29,8 @@ const getData = (onSuccess, onFail) => {
 };
 
 const sendData = (onSuccess, onFail, body) => {
-  fetch(POST_URL, {
-    method: HttpMethod.POST,
+  fetch(FORM_URL, {
+    method: HttpMethods.POST,
     body
   })
     .then(({ok}) => {
