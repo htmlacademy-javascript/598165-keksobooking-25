@@ -5,7 +5,6 @@ const HttpMethods = {
   POST: 'POST',
 };
 
-const LIMIT = 10;
 const OFFERS_URL = 'https://25.javascript.pages.academy/keksobooking/data';
 const FORM_URL = 'https://25.javascript.pages.academy/keksobooking';
 
@@ -21,7 +20,6 @@ const getData = (onSuccess, onFail) => {
     .then((response) => response.json())
     .then((offers) => {
       adaptData(offers);
-      offers = offers.slice(0, LIMIT);
 
       onSuccess(offers);
     })
