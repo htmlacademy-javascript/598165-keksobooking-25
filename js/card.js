@@ -1,9 +1,3 @@
-const template = document.querySelector('#card')
-  .content
-  .querySelector('.popup');
-const photoTemplate = template.querySelector('.popup__photo');
-template.querySelector('.popup__photos').innerHTML = '';
-
 const OfferTypes = {
   flat: 'Квартира',
   bungalow: 'Бунгало',
@@ -11,6 +5,12 @@ const OfferTypes = {
   palace: 'Дворец',
   hotel: 'Отель',
 };
+
+const template = document.querySelector('#card')
+  .content
+  .querySelector('.popup');
+const photoTemplate = template.querySelector('.popup__photo');
+template.querySelector('.popup__photos').innerHTML = '';
 
 export const generateOfferElement = (data) => {
   const generated = template.cloneNode(true);

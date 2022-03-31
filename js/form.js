@@ -81,6 +81,7 @@ const syncTime = (field1, field2) => {
 
 const resetForm = () => {
   adForm.reset();
+  pristine.reset();
   resetMainMarker();
   setMinPrice();
 };
@@ -88,12 +89,14 @@ const resetForm = () => {
 const disableSubmitButton = () => {
   submitButton.disabled = true;
   submitButton.style.opacity = '0.5';
+  submitButton.style.cursor = 'not-allowed';
   submitButton.textContent = 'Публикую...';
 };
 
 const enableSubmitButton = () => {
   submitButton.disabled = false;
   submitButton.style.opacity = '1';
+  submitButton.style.cursor = 'pointer';
   submitButton.textContent = 'Опубликовать';
 };
 
@@ -158,4 +161,5 @@ const initForm = () => {
 
 export {
   initForm,
+  resetButton
 };
