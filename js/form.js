@@ -2,6 +2,7 @@ import {setSlider, setupSlider, updateSliderOptions} from './slider.js';
 import {debounce} from './utils.js';
 import {sendData, showApiMessage} from './api.js';
 import {resetMainMarker} from './map.js';
+import {addFilePreview, resetFilePreview} from './file-upload.js';
 
 const ADDRESS_VALIDATION_ERROR = 'Формат значения поля адреса: широта, долгота';
 const ONE_ROOM_VALIDATION_ERROR = '1 комната для 1 гостя';
@@ -43,6 +44,10 @@ const timeInField = adForm.querySelector('#timein');
 const timeOutField = adForm.querySelector('#timeout');
 const resetButton = adForm.querySelector('.ad-form__reset');
 const submitButton = adForm.querySelector('.ad-form__submit');
+const avatarInput = adForm.querySelector('.ad-form-header__input');
+const avatarPreview = adForm.querySelector('.ad-form-header__preview');
+const imagesInput = adForm.querySelector('#images');
+const imagesPreviews = adForm.querySelector('.ad-form__photo');
 
 const pristine = new Pristine(adForm, {
   classTo: 'ad-form__element',
@@ -84,6 +89,8 @@ const resetForm = () => {
   pristine.reset();
   resetMainMarker();
   setMinPrice();
+  resetFilePreview(avatarPreview);
+  resetFilePreview(imagesPreviews, null);
 };
 
 const disableSubmitButton = () => {
@@ -150,6 +157,14 @@ const initForm = () => {
   typeField.addEventListener('change', () => {
     setMinPrice();
     pristine.validate();
+  });
+
+  avatarInput.addEventListener('change', () => {
+    addFilePreview(avatarInput, avatarPreview);
+  });
+
+  imagesInput.addEventListener('change', () => {
+    addFilePreview(imagesInput, imagesPreviews);
   });
 
   resetButton.addEventListener('click', (evt) => {
