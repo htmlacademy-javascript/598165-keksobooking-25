@@ -1,38 +1,37 @@
-const FILE_PREVIEW_DEFAULT_SRC = 'img/muffin-grey.svg';
+const DEFAULT_PREVIEW_SRC = 'img/muffin-grey.svg';
 
-const fileTypes = /\.(gif|jp?g|png)$/i;
+const imageTypes = /\.(gif|jp?g|png)$/i;
 
-const addFilePreview = (fileInput, filePreviewContainer ) => {
+const addFilePreview = (input, container) => {
 
-  const {files} = fileInput;
-  filePreviewContainer.innerHTML = '';
-  filePreviewContainer.style.padding = '0';
+  const file = input.files[0];
 
-  [...files].forEach((file) => {
-    const isFileTypeCorrect = fileTypes.test(file.name);
+  container.innerHTML = '';
+  container.style.padding = '0';
 
-    if (isFileTypeCorrect) {
-      const filePreview = document.createElement('img');
-      filePreview.src = URL.createObjectURL(file);
-      filePreview.style.width = '70px';
-      filePreview.style.height = '70px';
-      filePreview.style.objectFit = 'cover';
-      filePreviewContainer.append(filePreview);
-    }
-  });
+  const isTypeCorrect = imageTypes.test(file.name);
+
+  if (isTypeCorrect) {
+    const preview = document.createElement('img');
+    preview.src = URL.createObjectURL(file);
+    preview.style.width = '70px';
+    preview.style.height = '70px';
+    preview.style.objectFit = 'cover';
+    container.append(preview);
+  }
 };
 
-const resetFilePreview = (filePreviewContainer, src = FILE_PREVIEW_DEFAULT_SRC) => {
-  filePreviewContainer.innerHTML = '';
-  filePreviewContainer.removeAttribute('style');
+const resetFilePreview = (container, defaultSrc = DEFAULT_PREVIEW_SRC) => {
+  container.innerHTML = '';
+  container.removeAttribute('style');
 
-  if (src) {
+  if (defaultSrc) {
     const defaultPreview = document.createElement('img');
-    defaultPreview.src = src;
+    defaultPreview.src = defaultSrc;
     defaultPreview.width = 40;
     defaultPreview.height = 40;
-    filePreviewContainer.append(defaultPreview);
+    container.append(defaultPreview);
   }
-} ;
+};
 
 export {addFilePreview, resetFilePreview};

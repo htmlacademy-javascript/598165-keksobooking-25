@@ -12,7 +12,6 @@ const adaptData = (data) => {
   data.forEach((it) => {
     it.offer.location = it.location;
   });
-
 };
 
 const getData = (onSuccess, onFail) => {
