@@ -2,12 +2,12 @@ import {enablePage} from './page.js';
 import {generateOfferElement} from './card.js';
 import {resetButton} from './form.js';
 
-const TOKYO_COORDS = {
+const TOKYO_CENTER = {
   lat:  35.652832,
   lng: 139.839478
 };
 
-const MAP_ZOOM = 12;
+const ZOOM = 12;
 
 let map, markerGroup, mainMarker;
 const addressField = document.querySelector('#address');
@@ -24,7 +24,7 @@ const pinIcon = L.icon({
   iconAnchor: [20, 20]
 });
 
-const centerMap = () => map.setView(TOKYO_COORDS, MAP_ZOOM);
+const centerMap = () => map.setView(TOKYO_CENTER, ZOOM);
 
 const updateAddressField = (evt) => {
   const {lat, lng} = evt.target.getLatLng();
@@ -32,7 +32,7 @@ const updateAddressField = (evt) => {
 };
 
 const addMainMarker = () => {
-  mainMarker = L.marker(TOKYO_COORDS, {
+  mainMarker = L.marker(TOKYO_CENTER, {
     draggable: true,
     icon: mainPinIcon,
   });
@@ -40,7 +40,7 @@ const addMainMarker = () => {
   mainMarker.addTo(map);
   document
     .querySelector('#address')
-    .value = `${TOKYO_COORDS.lat}, ${TOKYO_COORDS.lng}`;
+    .value = `${TOKYO_CENTER.lat}, ${TOKYO_CENTER.lng}`;
 
   mainMarker.on('drag', updateAddressField);
 };
@@ -48,7 +48,7 @@ const addMainMarker = () => {
 const initMap = (selector) => {
   map = L.map(selector);
   map.on('load', () => enablePage());
-  map.setView(TOKYO_COORDS, MAP_ZOOM);
+  map.setView(TOKYO_CENTER, ZOOM);
   markerGroup = L.layerGroup().addTo(map);
 
   L.tileLayer(
