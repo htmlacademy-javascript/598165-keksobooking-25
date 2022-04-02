@@ -13,12 +13,8 @@ const setupSlider = () => {
     step: 1,
     connect: 'lower',
     format: {
-      to: function (value) {
-        return value.toFixed(0);
-      },
-      from: function (value) {
-        return parseFloat(value);
-      }
+      to:  (value) => value.toFixed(0),
+      from: (value) => parseFloat(value)
     }
   });
 
@@ -33,20 +29,11 @@ const updateSliderOptions = (options) => {
   element.noUiSlider.set(min);
 };
 
-const toggleSlider = (enable) => {
-  if (enable) {
-    element.removeAttribute('disabled');
-  } else {
-    element.setAttribute('disabled', 'disabled');
-  }
-};
-
 const setSlider = (value) => element.noUiSlider.set(value);
 
 export {
   setSlider,
   setupSlider,
-  toggleSlider,
   updateSliderOptions,
 };
 
