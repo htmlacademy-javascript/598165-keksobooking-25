@@ -14,18 +14,18 @@ const adaptData = (data) => {
   });
 };
 
-const getData = (onSuccess, onFail) => {
+const getData = () => new Promise((resolve, reject) => {
   fetch(OFFERS_URL)
     .then((response) => response.json())
     .then((offers) => {
       adaptData(offers);
 
-      onSuccess(offers);
+      resolve(offers);
     })
-    .catch(onFail);
-};
+    .catch(reject);
+});
 
-const sendData = (onSuccess, onFail, body) => {
+const sendData = (body) => new Promise((resolve, reject) => {
   fetch(FORM_URL, {
     method: HttpMethods.POST,
     body
@@ -34,10 +34,10 @@ const sendData = (onSuccess, onFail, body) => {
       if (!ok) {
         throw new Error();
       }
-      onSuccess();
+      resolve();
     })
-    .catch(onFail);
-};
+    .catch(reject);
+});
 
 const showApiMessage = (type) => {
   const template = document.querySelector(`#${type}`).content

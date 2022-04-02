@@ -1,10 +1,11 @@
-import {enablePage} from './page.js';
+const MAP_ELEMENT = 'map-canvas';
+
 import {generateOfferElement} from './card.js';
-import {resetButton} from './form.js';
+import {resetButton} from './add-offer.js';
 
 const TOKYO_CENTER = {
-  lat:  35.652832,
-  lng: 139.839478
+  lat:  35.65283,
+  lng: 139.83947
 };
 
 const ZOOM = 12;
@@ -45,9 +46,9 @@ const addMainMarker = () => {
   mainMarker.on('drag', updateAddressField);
 };
 
-const initMap = (selector) => {
-  map = L.map(selector);
-  map.on('load', () => enablePage());
+const initMap = () => new Promise((resolve) => {
+  map = L.map(MAP_ELEMENT);
+  map.on('load', () => resolve());
   map.setView(TOKYO_CENTER, ZOOM);
   markerGroup = L.layerGroup().addTo(map);
 
@@ -64,7 +65,7 @@ const initMap = (selector) => {
     evt.preventDefault();
     centerMap();
   });
-};
+});
 
 const createOfferMarker = (offer) => {
   const{offer: {location: {lat, lng}}} = offer;

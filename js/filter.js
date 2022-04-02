@@ -1,6 +1,8 @@
 import {redrawMarkers} from './map.js';
-import {resetButton} from './form.js';
+import {resetButton} from './add-offer.js';
 import {debounce} from './utils.js';
+
+const LIMIT = 10;
 
 const Inputs = {
   PRICE: 'housing-price',
@@ -25,24 +27,44 @@ const Prices = {
 
 const mapFilters = document.querySelector('.map__filters');
 
-const filterByType = (type) => ({offer}) => offer.type === type;
+const checkType = (offer, type) => {
+  if (type === DefaultValues.TYPE) {
+    return true;
+  }
+  return  offer.type === type;
+};
 
-const filterByPrice = (price) => {
+const checkPrice = (offer, price) => {
+  if (price === DefaultValues.PRICE) {
+    return true;
+  }
+
   switch (price) {
     case Prices.MIDDLE:
-      return ({offer}) => offer.price >= 10000 && offer.price <= 50000;
+      return offer.price >= 10000 && offer.price <= 50000;
     case Prices.LOW:
-      return ({offer}) => offer.price <= 10000;
+      return offer.price <= 10000;
     case Prices.HIGH:
-      return ({offer}) => offer.price >= 50000;
+      return offer.price >= 50000;
   }
 };
 
-const filterByRooms = (rooms) => ({offer}) => offer.rooms === parseInt(rooms, 10);
+const checkRooms = (offer, rooms) => {
+  if (rooms === DefaultValues.ROOMS) {
+    return true;
+  }
+  return offer.rooms === parseInt(rooms, 10);
+};
 
-const filterByGuest = (guests) => ({offer}) => offer.guests === parseInt(guests, 10);
+const checkGuest = (offer, guests) => {
+  if (guests === DefaultValues.GUESTS) {
+    return true;
+  }
+  return offer.guests === parseInt(guests, 10);
+};
 
-const filterByFeatures = (features) => ({offer}) => {
+
+const checkFeatures = (offer, features) => {
   const offerHasFeatures = offer.features && offer.features.length;
 
   if (offerHasFeatures) {
@@ -52,6 +74,7 @@ const filterByFeatures = (features) => ({offer}) => {
   return false;
 };
 
+
 const applyFilters = (offers) => {
   const formData = new FormData(mapFilters);
   const type = formData.get(Inputs.TYPE);
@@ -60,32 +83,28 @@ const applyFilters = (offers) => {
   const guests = formData.get(Inputs.GUESTS);
   const features = formData.getAll(Inputs.FEATURES);
 
-  let result = offers.slice();
-
-  if (type !== DefaultValues.TYPE) {
-    result = result.filter(filterByType(type));
-  }
-
-  if (price !== DefaultValues.PRICE) {
-    result = result.filter(filterByPrice(price));
-  }
-
-  if (rooms !== DefaultValues.ROOMS) {
-    result = result.filter(filterByRooms(rooms));
-  }
-
-  if (guests !== DefaultValues.GUESTS) {
-    result = result.filter(filterByGuest(guests));
-  }
-
-  if (features.length) {
-    result = result.filter(filterByFeatures(features));
-  }
-
-  return result;
+  return offers.filter(({offer}) => {
+    if (!checkType(offer, type)) {
+      return false;
+    }
+    if (!checkPrice(offer, price)) {
+      return false;
+    }
+    if (!checkRooms(offer, rooms)) {
+      return false;
+    }
+    if (!checkGuest(offer, guests)) {
+      return false;
+    }
+    return checkFeatures(offer, features);
+  })
+    .slice(0, LIMIT);
 };
 
-const setupFilter = (offers) => {
+
+const initFilterForm = (offers) => {
+  redrawMarkers(applyFilters(offers));
+
   mapFilters.addEventListener('change', debounce(() => {
     redrawMarkers(applyFilters(offers));
   }));
@@ -98,4 +117,4 @@ const setupFilter = (offers) => {
     });
 };
 
-export {setupFilter};
+export {initFilterForm};

@@ -1,19 +1,21 @@
-import {initForm} from './form.js';
-import {disablePage} from './page.js';
-import {initMap, addMarkers} from './map.js';
+import {disableForms, toggleForm, pageForms} from './form.js';
 import {getData, showApiMessage} from './api.js';
-import {setupFilter} from './filter.js';
+import {initAddOfferForm} from './add-offer.js';
+import {initFilterForm} from './filter.js';
+import {initMap} from './map.js';
 
-const LIMIT = 10;
+const {addOffer, filter} = pageForms;
 
-disablePage();
+disableForms();
 
-initMap('map-canvas');
+initMap().then(() => {
+  initAddOfferForm();
+  toggleForm(addOffer, true);
+});
 
-getData((offers) => {
-  offers = offers.slice(0, LIMIT);
-  setupFilter(offers);
-  addMarkers(offers);
-}, () => showApiMessage('load-error'));
-
-initForm();
+getData()
+  .then((offers) => {
+    initFilterForm(offers);
+    toggleForm(filter, true);
+  })
+  .catch(() => showApiMessage('load-error'));
